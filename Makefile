@@ -9,3 +9,6 @@ input:
 
 scaffold:
 	go run commands/scaffold/main.go -day $(DAY) -year $(YEAR)
+
+debug:
+	dlv debug src/Y$(YEAR)/Day$(DAY)/main.go
