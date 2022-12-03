@@ -20,21 +20,55 @@ var example = `1000
 10000`
 
 func TestPart1(t *testing.T) {
-	input := example
-	want := 24000
+	tests := []struct {
+		name  string
+		input string
+		want  int
+	}{
+		{
+			name:  "example",
+			input: example,
+			want:  24000,
+		},
+		{
+			name:  "actual",
+			input: input,
+			want:  67450,
+		},
+	}
 
-	got := part1(input)
-	if got != want {
-		t.Errorf("got %d want %d", got, want)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if got := part1(test.input); got != test.want {
+				t.Errorf("part1() = %d, want %d", got, test.want)
+			}
+		})
 	}
 }
 
 func TestPart2(t *testing.T) {
-	input := example
-	want := 45000
+	tests := []struct {
+		name  string
+		input string
+		want  int
+	}{
+		{
+			name:  "example",
+			input: example,
+			want:  45000,
+		},
+		{
+			name:  "actual",
+			input: input,
+			want:  199357,
+		},
+	}
 
-	got := part2(input)
-	if got != want {
-		t.Errorf("got %d want %d", got, want)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if got := part2(test.input); got != test.want {
+				t.Errorf("part2() = %d, want %d", got, test.want)
+			}
+		})
 	}
 }

@@ -9,6 +9,57 @@ B X
 C Z`
 
 func TestPart1(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  int
+	}{
+		{
+			name:  "example",
+			input: example,
+			want:  15,
+		},
+		{
+			name:  "actual",
+			input: input,
+			want:  9651,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if got := part1(test.input); got != test.want {
+				t.Errorf("part1() = %d, want %d", got, test.want)
+			}
+		})
+	}
+}
+
+func TestPart2(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  int
+	}{
+		{
+			name:  "example",
+			input: example,
+			want:  12,
+		},
+		{
+			name:  "actual",
+			input: input,
+			want:  10560,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if got := part2(test.input); got != test.want {
+				t.Errorf("part2() = %d, want %d", got, test.want)
+			}
+		})
+	}
 	input := example
 	want := 15
 
@@ -114,15 +165,5 @@ func Test_determineWin(t *testing.T) {
 				t.Errorf("determineWin(%d\n) = %d, want %d", test.input, got, test.want)
 			}
 		})
-	}
-}
-
-func TestPart2(t *testing.T) {
-	input := example
-	want := 12
-
-	got := part2(input)
-	if got != want {
-		t.Errorf("got %d want %d", got, want)
 	}
 }
