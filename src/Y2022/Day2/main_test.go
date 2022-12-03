@@ -111,7 +111,7 @@ func Test_determineWin(t *testing.T) {
 	for _, test := range tests {
 		t.Run("example", func(t *testing.T) {
 			if got := determineWin(test.input).outcome; got != test.want {
-				t.Errorf("convertToPoints(%d\n) = %d, want %d", test.input, got, test.want)
+				t.Errorf("determineWin(%d\n) = %d, want %d", test.input, got, test.want)
 			}
 		})
 	}
