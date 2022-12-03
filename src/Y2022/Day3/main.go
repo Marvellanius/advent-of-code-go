@@ -62,10 +62,7 @@ func part2(input string) int {
 }
 
 func parseInput(input string) (parsed []string) {
-	for _, line := range strings.Split(input, "\n") {
-		parsed = append(parsed, line)
-	}
-
+	parsed = append(parsed, strings.Split(input, "\n")...)
 	return parsed
 }
 
