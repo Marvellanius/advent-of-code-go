@@ -2,8 +2,8 @@ package main
 
 import (
 	_ "embed"
-	"fmt"
 	"flag"
+	"fmt"
 	"strings"
 )
 
@@ -33,7 +33,6 @@ func main() {
 	}
 }
 
-
 func part1(input string) int {
 	return 0
 }
@@ -43,9 +42,7 @@ func part2(input string) int {
 }
 
 func parseInput(input string) (parsed []string) {
-	for _, line := range strings.Split(input, "\n") {
-		parsed = append(parsed, line)
-	}
+	parsed = append(parsed, strings.Split(input, "\n")...)
 
 	return parsed
 }

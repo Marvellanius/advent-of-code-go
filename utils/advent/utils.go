@@ -1,14 +1,14 @@
 package advent
 
 import (
-	"fmt"
-	"net/http"
-	"path/filepath"
-	"log"
-	"io"
-	"time"
 	"flag"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
 	"os"
+	"path/filepath"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -25,7 +25,7 @@ func ParseFlags() (day, year int, cookie string) {
 	flag.StringVar(&cookie, "cookie", os.Getenv("SESSION_COOKIE"), "session cookie")
 	flag.Parse()
 
-	if day < 1 || day > 25  {
+	if day < 1 || day > 25 {
 		log.Fatalf("day out of range %d", day)
 	}
 
@@ -36,7 +36,7 @@ func ParseFlags() (day, year int, cookie string) {
 	if cookie == "" {
 		log.Fatalf("need to set a cookie in .env SESSION_COOKIE or pass as cli argument -cookie")
 	}
-	
+
 	return day, year, cookie
 }
 
@@ -46,7 +46,7 @@ func GetInput(day, year int, cookie string) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 
 	sessionCookie := http.Cookie{
-		Name: "session",
+		Name:  "session",
 		Value: cookie,
 	}
 	req.AddCookie(&sessionCookie)
@@ -65,11 +65,47 @@ func GetInput(day, year int, cookie string) {
 
 	wd, err := os.Getwd()
 
-
 	filename := filepath.Join(wd, fmt.Sprintf("src/Y%d/Day%d/input.txt", year, day))
 
 	os.MkdirAll(filepath.Dir(filename), os.ModePerm)
 	os.WriteFile(filename, body, os.FileMode(0644))
 
 	fmt.Println("Wrote file: ", filename)
+}
+
+func ScaffoldCode(day, year int) {
+
+	filePaths := []struct {
+		template string
+		target   string
+	}{
+		{
+			template: "commands/scaffold/templates/main_test.go",
+			target:   fmt.Sprintf("src/Y%d/Day%d/main_test.go", year, day),
+		},
+		{
+			template: "commands/scaffold/templates/main.go",
+			target:   fmt.Sprintf("src/Y%d/Day%d/main.go", year, day),
+		},
+	}
+
+	for _, path := range filePaths {
+		copyTemplate(path)
+	}
+}
+
+func copyTemplate(path struct {
+	template string
+	target   string
+}) {
+	original, err := os.ReadFile(path.template)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Create new file
+	os.MkdirAll(filepath.Dir(path.target), os.ModePerm)
+
+	os.WriteFile(path.target, original, 0644)
+	fmt.Println("Wrote file: ", path.target)
 }
