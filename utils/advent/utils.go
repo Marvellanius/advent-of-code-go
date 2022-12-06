@@ -109,3 +109,19 @@ func copyTemplate(path struct {
 	os.WriteFile(path.target, original, 0644)
 	fmt.Println("Wrote file: ", path.target)
 }
+
+func RuneIntersect(first, second []rune) []rune {
+	out := []rune{}
+	bucket := map[rune]bool{}
+
+	for _, i := range first {
+		for _, j := range second {
+			if i == j && !bucket[i] {
+				out = append(out, i)
+				bucket[i] = true
+			}
+		}
+	}
+
+	return out
+}
