@@ -57,10 +57,28 @@ func part1(input string) int {
 		tail, head = moveTailAndHead(tail, head, stringUtil.ToRune(splitLine[0]), stringUtil.ToInt(splitLine[1]))
 	}
 
-	return len(tail)
+	m := map[location]bool{}
+	for _, t := range tail {
+		m[t] = true
+	}
+
+	return len(m)
 }
 
 func part2(input string) int {
+	snake := map[int][]location{}
+	for i := 0; i < 10; i++ {
+		snake[i] = append(snake[i], location{0, 0})
+	}
+
+	// for _, line := range parseInput(input) {
+	// 	for i, segment := range snake {
+
+	// 	}
+	// }
+
+	fmt.Println(snake)
+
 	return 0
 }
 
@@ -86,19 +104,25 @@ func moveTailAndHead(tail, head []location, direction rune, steps int) ([]locati
 		}
 		// horizontal movement?
 		if moreThanOneRemoved(newTail.x, newHead.x) && newTail.y == newHead.y {
-			newTail.x = newHead.x - 1
+			if newTail.x > newHead.x {
+				newTail.x = newHead.x + 1
+			} else {
+				newTail.x = newHead.x - 1
+			}
 		} else if moreThanOneRemoved(newTail.y, newHead.y) && newTail.x == newHead.x {
 			// vertical movement?
-			newTail.y = newHead.y - 1
+			if newTail.y > newHead.y {
+				newTail.y = newHead.y + 1
+			} else {
+				newTail.y = newHead.y - 1
+			}
 		} else if (moreThanOneRemoved(newTail.y, newHead.y) && int(math.Abs(float64(newTail.x)-float64(newHead.x))) == 1) ||
 			(moreThanOneRemoved(newTail.x, newHead.x) && int(math.Abs(float64(newTail.y)-float64(newHead.y))) == 1) {
 			// diagonal movement?
 			newTail = lastHeadLocation
 		}
 
-		if lastTailLocation != newTail {
-			tail = append(tail, newTail)
-		}
+		tail = append(tail, newTail)
 		head = append(head, newHead)
 
 	}
