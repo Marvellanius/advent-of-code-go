@@ -4,7 +4,6 @@ import (
 	_ "embed"
 	"flag"
 	"fmt"
-	"math"
 	"strings"
 
 	"advent-of-code-go/utils/stringUtil"
@@ -66,20 +65,57 @@ func part1(input string) int {
 }
 
 func part2(input string) int {
-	snake := map[int][]location{}
+	snake := []location{}
 	for i := 0; i < 10; i++ {
-		snake[i] = append(snake[i], location{0, 0})
+		snake = append(snake, location{0, 0})
 	}
 
-	// for _, line := range parseInput(input) {
-	// 	for i, segment := range snake {
+	tailLocations := map[location]bool{}
+	tailLocations[location{0, 0}] = true
 
-	// 	}
-	// }
+	for _, line := range parseInput(input) {
+		splitLine := strings.Split(line, " ")
 
-	fmt.Println(snake)
+		for step := 0; step < stringUtil.ToInt(splitLine[1]); step++ {
+			switch stringUtil.ToRune(splitLine[0]) {
+			case UP:
+				snake[0].y++
+			case DOWN:
+				snake[0].y--
+			case LEFT:
+				snake[0].x--
+			case RIGHT:
+				snake[0].x++
+			}
+			for index := 1; index < len(snake); index++ {
+				snake[index] = updateSegmentLocation(snake[index], snake[index-1])
 
-	return 0
+				if index == len(snake)-1 {
+					tailLocations[snake[index]] = true
+					fmt.Println(tailLocations)
+				}
+			}
+		}
+	}
+	return len(tailLocations)
+}
+
+func updateSegmentLocation(current, parent location) location {
+	if moreThanOneRemoved(current.x, parent.x) || moreThanOneRemoved(current.y, parent.y) {
+		if parent.x-current.x > 0 {
+			current.x++
+		} else if parent.x-current.x < 0 {
+			current.x--
+		}
+
+		if parent.y-current.y > 0 {
+			current.y++
+		} else if parent.x-current.y < 0 {
+			current.y--
+		}
+	}
+
+	return current
 }
 
 func moveTailAndHead(tail, head []location, direction rune, steps int) ([]location, []location) {
@@ -103,24 +139,25 @@ func moveTailAndHead(tail, head []location, direction rune, steps int) ([]locati
 			newHead.x++
 		}
 		// horizontal movement?
-		if moreThanOneRemoved(newTail.x, newHead.x) && newTail.y == newHead.y {
-			if newTail.x > newHead.x {
-				newTail.x = newHead.x + 1
-			} else {
-				newTail.x = newHead.x - 1
-			}
-		} else if moreThanOneRemoved(newTail.y, newHead.y) && newTail.x == newHead.x {
-			// vertical movement?
-			if newTail.y > newHead.y {
-				newTail.y = newHead.y + 1
-			} else {
-				newTail.y = newHead.y - 1
-			}
-		} else if (moreThanOneRemoved(newTail.y, newHead.y) && int(math.Abs(float64(newTail.x)-float64(newHead.x))) == 1) ||
-			(moreThanOneRemoved(newTail.x, newHead.x) && int(math.Abs(float64(newTail.y)-float64(newHead.y))) == 1) {
-			// diagonal movement?
-			newTail = lastHeadLocation
-		}
+		newTail = updateSegmentLocation(newTail, newHead)
+		// if moreThanOneRemoved(newTail.x, newHead.x) && newTail.y == newHead.y {
+		// 	if newTail.x > newHead.x {
+		// 		newTail.x = newHead.x + 1
+		// 	} else {
+		// 		newTail.x = newHead.x - 1
+		// 	}
+		// } else if moreThanOneRemoved(newTail.y, newHead.y) && newTail.x == newHead.x {
+		// 	// vertical movement?
+		// 	if newTail.y > newHead.y {
+		// 		newTail.y = newHead.y + 1
+		// 	} else {
+		// 		newTail.y = newHead.y - 1
+		// 	}
+		// } else if (moreThanOneRemoved(newTail.y, newHead.y) && int(math.Abs(float64(newTail.x)-float64(newHead.x))) == 1) ||
+		// 	(moreThanOneRemoved(newTail.x, newHead.x) && int(math.Abs(float64(newTail.y)-float64(newHead.y))) == 1) {
+		// 	// diagonal movement?
+		// 	newTail = lastHeadLocation
+		// }
 
 		tail = append(tail, newTail)
 		head = append(head, newHead)

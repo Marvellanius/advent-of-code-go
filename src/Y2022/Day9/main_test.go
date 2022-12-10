@@ -49,7 +49,7 @@ func TestPart2(t *testing.T) {
 		{
 			name:  "example",
 			input: example,
-			want:  13,
+			want:  36,
 		},
 		// {
 		// 	name:  "actual",
@@ -67,7 +67,31 @@ func TestPart2(t *testing.T) {
 	}
 }
 
-func Test_modeTailAndHead(t *testing.T) {
+func Test_updateSegmentLocation(t *testing.T) {
+	tests := []struct {
+		name    string
+		current location
+		parent  location
+		want    location
+	}{
+		{
+			name:    "diagonalExample",
+			current: location{3, 0},
+			parent:  location{4, 2},
+			want:    location{4, 1},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			if got := updateSegmentLocation(test.current, test.parent); got.x != test.want.x || got.y != test.want.y {
+				t.Errorf("updateSegmentLocation() got x = %d, y = %d want x = %d, y = %d", got.x, got.y, test.want.x, test.want.y)
+			}
+		})
+	}
+}
+
+func Test_moveTailAndHead(t *testing.T) {
 	tests := []struct {
 		name      string
 		head      []location
