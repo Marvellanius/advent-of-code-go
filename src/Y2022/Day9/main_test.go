@@ -13,6 +13,15 @@ D 1
 L 5
 R 2`
 
+var longExample = `R 5
+U 8
+L 8
+D 3
+R 17
+D 10
+L 25
+U 20`
+
 func TestPart1(t *testing.T) {
 	tests := []struct {
 		name  string
@@ -48,14 +57,14 @@ func TestPart2(t *testing.T) {
 	}{
 		{
 			name:  "example",
-			input: example,
+			input: longExample,
 			want:  36,
 		},
-		// {
-		// 	name:  "actual",
-		// 	input: input,
-		// 	want:  483,
-		// },
+		{
+			name:  "actual",
+			input: input,
+			want:  2578,
+		},
 	}
 
 	for _, test := range tests {
@@ -79,6 +88,12 @@ func Test_updateSegmentLocation(t *testing.T) {
 			current: location{3, 0},
 			parent:  location{4, 2},
 			want:    location{4, 1},
+		},
+		{
+			name:    "diagonalExample",
+			current: location{3, 0},
+			parent:  location{2, 2},
+			want:    location{2, 1},
 		},
 	}
 
