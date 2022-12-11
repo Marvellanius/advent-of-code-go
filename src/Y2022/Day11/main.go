@@ -126,7 +126,7 @@ func doOperation(old int, operation string) (new int) {
 
 	operator := parsed[0]
 	value := strings.Replace(string(parsed[1:]), " ", "", -1)
-
+	fmt.Println(operator)
 	switch operator {
 	case '*':
 		if value == "old" {
@@ -134,7 +134,7 @@ func doOperation(old int, operation string) (new int) {
 		} else {
 			new = old * stringUtil.ToInt(value)
 		}
-	case '+':
+	default:
 		if value == "old" {
 			new = old + old
 		} else {
@@ -146,7 +146,7 @@ func doOperation(old int, operation string) (new int) {
 }
 
 func addOperation(input string) (output string) {
-	output = strings.Replace(input, "Operation: ", "", -1)
+	output = strings.Replace(input, "  Operation: ", "", -1)
 	return
 }
 
