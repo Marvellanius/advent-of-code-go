@@ -67,7 +67,7 @@ func part1(input string) int {
 	}
 
 	for i := 0; i < 20; i++ {
-		monkeys = playRound(monkeys)
+		monkeys = playRound(monkeys, true, 0)
 	}
 
 	var activity []int
@@ -81,7 +81,50 @@ func part1(input string) int {
 }
 
 func part2(input string) int {
-	return 0
+	// Monkeys []monkey have Items []int, an operation string, a test {int, operation_if_true, operation_if_false}
+	monkeys := []monkey{}
+
+	monkeyStrings := regexp.MustCompile(`\n\n`).Split(input, -1)
+
+	finiteUniverse := 1
+
+	for _, line := range monkeyStrings {
+		separatedMonkeys := regexp.MustCompile(`\r?\n`).Split(line, -1)
+
+		currentMonkey := monkey{}
+		currentMonkey.test = test{}
+		for index, monkeyLine := range separatedMonkeys {
+			switch index {
+			case 1:
+				currentMonkey.items = addStartingItems(separatedMonkeys[index])
+			case 2:
+				currentMonkey.operation = addOperation(monkeyLine)
+			case 3:
+				currentMonkey.test.division = stringUtil.ToInt(regexp.MustCompile(`\d+`).FindAllString(monkeyLine, -1)[0])
+			case 4:
+				currentMonkey.test.operationTrue = stringUtil.ToInt(regexp.MustCompile(`\d+`).FindAllString(monkeyLine, -1)[0])
+			case 5:
+				currentMonkey.test.operationFalse = stringUtil.ToInt(regexp.MustCompile(`\d+`).FindAllString(monkeyLine, -1)[0])
+			}
+
+		}
+		monkeys = append(monkeys, currentMonkey)
+
+		finiteUniverse *= currentMonkey.test.division
+	}
+
+	for i := 0; i < 10000; i++ {
+		monkeys = playRound(monkeys, false, finiteUniverse)
+	}
+
+	var activity []int
+	for _, monkey := range monkeys {
+		activity = append(activity, monkey.activity)
+	}
+
+	sort.Ints(activity)
+
+	return activity[len(activity)-1] * activity[len(activity)-2]
 }
 
 type test struct {
@@ -97,15 +140,19 @@ type monkey struct {
 	activity  int
 }
 
-func playRound(monkeys []monkey) []monkey {
+func playRound(monkeys []monkey, worry bool, intBound int) []monkey {
+
 	for index, monkey := range monkeys {
 		initialLength := len(monkey.items)
 		monkeys[index].activity += initialLength
 		for itemIndex := 0; itemIndex < initialLength; itemIndex++ {
 			var item int
 			item, monkeys[index].items = slice.PopFirstElement(monkeys[index].items)
-			worry := doOperation(item, monkey.operation)
-			item = worry / 3
+			item = doOperation(item, monkey.operation, intBound)
+
+			if worry {
+				item = item / 3
+			}
 
 			var throwIndex int
 			if item%monkey.test.division == 0 {
@@ -121,12 +168,11 @@ func playRound(monkeys []monkey) []monkey {
 	return monkeys
 }
 
-func doOperation(old int, operation string) (new int) {
+func doOperation(old int, operation string, intBound int) (new int) {
 	parsed := strings.Replace(operation, "new = old ", "", -1)
 
 	operator := parsed[0]
 	value := strings.Replace(string(parsed[1:]), " ", "", -1)
-	fmt.Println(operator)
 	switch operator {
 	case '*':
 		if value == "old" {
@@ -140,6 +186,10 @@ func doOperation(old int, operation string) (new int) {
 		} else {
 			new = old + stringUtil.ToInt(value)
 		}
+	}
+
+	if intBound > 0 {
+		new = new % intBound
 	}
 
 	return

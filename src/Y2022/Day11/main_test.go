@@ -68,13 +68,13 @@ func TestPart2(t *testing.T) {
 		{
 			name:  "example",
 			input: example,
-			want:  2,
+			want:  2713310158,
 		},
-		{
-			name:  "actual",
-			input: input,
-			want:  483,
-		},
+		// {
+		// 	name:  "actual",
+		// 	input: input,
+		// 	want:  483,
+		// },
 	}
 
 	for _, test := range tests {
