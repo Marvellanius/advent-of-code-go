@@ -27,3 +27,11 @@ func Max(array []int) int {
 	_, max := MinMax(array)
 	return max
 }
+
+func RemoveFirstElement(slice []int) []int {
+	return slice[1:]
+}
+
+func PopFirstElement(slice []int) (int, []int) {
+	return slice[0], slice[1:]
+}
