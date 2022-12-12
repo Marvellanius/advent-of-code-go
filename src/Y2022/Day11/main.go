@@ -208,9 +208,3 @@ func addStartingItems(input string) (output []int) {
 
 	return
 }
-
-func parseInput(input string) (parsed []string) {
-	parsed = append(parsed, strings.Split(input, "\n")...)
-
-	return parsed
-}
